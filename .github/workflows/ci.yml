@@ -1,0 +1,36 @@
+name: C CI/CD & Security Sanitizers
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    name: Build & Test (${{ matrix.os }} - ${{ matrix.compiler }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        compiler: [clang, gcc]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Compile and Run Unit & E2E Tests
+        run: |
+          make clean
+          make test CC=${{ matrix.compiler }}
+
+      - name: Run AddressSanitizer & UndefinedBehaviorSanitizer
+        run: |
+          make clean
+          make sanitize CC=${{ matrix.compiler }}
+
+      - name: Run Latency & Throughput Benchmarks
+        run: |
+          make clean
+          make bench CC=${{ matrix.compiler }}

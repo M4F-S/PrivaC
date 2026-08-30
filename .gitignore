@@ -1,0 +1,14 @@
+# Binaries and build artifacts
+bin/
+*.o
+*.a
+*.so
+*.dylib
+
+# System & IDE files
+.DS_Store
+*.dSYM/
+.vscode/
+.idea/
+*.swp
+*~

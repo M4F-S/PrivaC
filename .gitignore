@@ -12,3 +12,7 @@ bin/
 .idea/
 *.swp
 *~
+
+# Separate Projects
+C Harness and Agent/
+

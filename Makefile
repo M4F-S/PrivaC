@@ -10,9 +10,9 @@ OBJ_DEPS = $(SRC_DEPS:.c=.o)
 
 BIN_DIR = bin
 
-all: $(BIN_DIR)/blind_proxy
+all: $(BIN_DIR)/privac
 
-$(BIN_DIR)/blind_proxy: src/main.o $(OBJ_CORE) $(OBJ_DEPS) | $(BIN_DIR)
+$(BIN_DIR)/privac: src/main.o $(OBJ_CORE) $(OBJ_DEPS) | $(BIN_DIR)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(BIN_DIR)/test_arena: tests/test_arena.o src/arena.o | $(BIN_DIR)
@@ -55,6 +55,7 @@ test: $(BIN_DIR)/test_arena $(BIN_DIR)/test_vault $(BIN_DIR)/test_math_vm $(BIN_
 sanitize:
 	$(MAKE) clean
 	$(MAKE) test CFLAGS="-Wall -Wextra -std=c11 -g -fsanitize=address,undefined -Iinclude -Ideps -pthread" LDFLAGS="-fsanitize=address,undefined -pthread -lm"
+	$(MAKE) clean
 
 bench: $(BIN_DIR)/benchmark
 	@./$(BIN_DIR)/benchmark

@@ -1,18 +1,18 @@
-# Aegis: Ultra-Fast Blind C Proxy & Symbolic Micro-Math Engine
+# PrivaC: Ultra-Fast Blind C Reverse Proxy & Symbolic Micro-Math Engine
 
-[![CI](https://github.com/mohamedfathy/blind-c-proxy/actions/workflows/ci.yml/badge.svg)](https://github.com/mohamedfathy/blind-c-proxy/actions)
+[![CI](https://github.com/M4F-S/PrivaC/actions/workflows/ci.yml/badge.svg)](https://github.com/M4F-S/PrivaC/actions)
 [![Language](https://img.shields.io/badge/language-C11-blue.svg)](https://en.wikipedia.org/wiki/C11_(C_standard_revision))
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Zero-Copy](https://img.shields.io/badge/JSON-yyjson%20SIMD-orange.svg)](https://github.com/ibireme/yyjson)
 [![Math-VM](https://img.shields.io/badge/Math-TinyExpr%20AST-purple.svg)](https://github.com/codeplea/tinyexpr)
 
-**Aegis** is a bare-metal, ultra-fast C reverse proxy designed for privacy-preserving, zero-knowledge LLM workflows. It intercepts inbound prompts, strips sensitive PII and raw figures into type-preserving surrogates and symbolic algebraic variables (`VAR_1`, `VAR_2`), and compiles mathematical expressions returned by remote LLMs (`<<calc: ... >>`) locally using an embedded micro-math VM (`tinyexpr`) over streaming Server-Sent Events (SSE) with **sub-millisecond latency**.
+**PrivaC** is a bare-metal, ultra-fast C reverse proxy designed for privacy-preserving, zero-knowledge LLM workflows. It intercepts inbound prompts, strips sensitive PII and raw figures into type-preserving surrogates and symbolic algebraic variables (`VAR_1`, `VAR_2`), and compiles mathematical expressions returned by remote LLMs (`<<calc: ... >>`) locally using an embedded micro-math VM (`tinyexpr`) over streaming Server-Sent Events (SSE) with **sub-millisecond latency**.
 
 ---
 
 ## 🚀 Key Advantages
 
-| Capability | Standard Gateway / Python Proxy | Aegis C Blind-Proxy |
+| Capability | Standard Gateway / Python Proxy | PrivaC (Bare-Metal C) |
 | :--- | :--- | :--- |
 | **End-to-End Latency** | +150 ms to +400 ms | **< 1.0 µs** (Bare-metal C11) |
 | **Agent / JSON Schema Safe** | ❌ Fails on typed integer fields | **✅ Yes** (Type-preserving surrogates) |
@@ -26,12 +26,12 @@
 ## 🏛 Architecture
 
 ```
-[Agent / SDK] ───> [Aegis C Proxy: Schema & Masking] ──(Blind Prompt)──> [Remote LLM Cloud]
-                           │                                                    │
-                     (Local Vault)                                              │ (Formula AST)
-                   [mlock + Arena]                                              │
-                           │                                                    ▼
-[Agent / SDK] <─── [Aegis C Proxy: TinyExpr Math + SSE Stream FSM] <────────────┘
+[Agent / SDK] ───> [PrivaC Proxy: Schema & Masking] ──(Blind Prompt)──> [Remote LLM Cloud]
+                            │                                                   │
+                      (Local Vault)                                             │ (Formula AST)
+                    [mlock + Arena]                                             │
+                            │                                                   ▼
+[Agent / SDK] <─── [PrivaC Proxy: TinyExpr Math + SSE Stream FSM] <─────────────┘
 ```
 
 ### The Hybrid Pipeline
@@ -56,7 +56,7 @@ Measured on Apple Silicon / Modern Linux x86_64:
 
 ```
 ==================================================================
-  AEGIS BLIND C PROXY & SYMBOLIC ENGINE - BENCHMARK SUITE
+  PRIVAC: BLIND C PROXY & SYMBOLIC ENGINE - BENCHMARK SUITE
 ==================================================================
 
 [1] Micro-Math VM Performance:
@@ -79,7 +79,7 @@ Measured on Apple Silicon / Modern Linux x86_64:
 ## 🔒 Security Hardening
 
 - **Page-Locked Vaults (`mlock`):** Guarantees sensitive session keys and cleartext values reside strictly in RAM and are never swapped to unencrypted disk swap space.
-- **Defensive Zeroization (`memset_s` / `explicit_bzero`):** Wipes memory regions immediately upon session termination to prevent compiler dead-store optimization.
+- **Defensive Zeroization (`privac_secure_zero`):** Wipes memory regions immediately upon session termination to prevent compiler dead-store optimization.
 - **Region-Based Arena Allocation:** Zero runtime `malloc`/`free` calls during request handling, preventing heap fragmentation and memory leaks.
 - **Strict Sanitizer Verification:** Fully verified under `-fsanitize=address,undefined` with 0 leaks and 0 warnings.
 
@@ -109,13 +109,13 @@ make bench
 ### 2. Run the Proxy
 ```bash
 # Run in standalone mock mode (offline demo with zero API keys required)
-./bin/blind_proxy --port 8080 --mock
+./bin/privac --port 8080 --mock
 
 # Run as upstream forwarder to a local Ollama or vLLM instance
-./bin/blind_proxy --port 8080 --upstream 127.0.0.1:11434
+./bin/privac --port 8080 --upstream 127.0.0.1:11434
 
 # Run with verbose token and masking logs
-./bin/blind_proxy --port 8080 --mock -v
+./bin/privac --port 8080 --mock -v
 ```
 
 ---
@@ -143,7 +143,7 @@ curl -N -X POST http://127.0.0.1:8080/v1/chat/completions \
 ```python
 from openai import OpenAI
 
-# Point client to local Aegis Proxy
+# Point client to local PrivaC Proxy
 client = OpenAI(
     base_url="http://127.0.0.1:8080/v1",
     api_key="none"

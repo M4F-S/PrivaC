@@ -9,7 +9,7 @@ static vault_manager_t g_vault_mgr;
 
 static void handle_sigint(int sig) {
     (void)sig;
-    printf("\nShutting down Aegis Proxy and wiping session vaults...\n");
+    printf("\nShutting down PrivaC Proxy and wiping session vaults...\n");
     vault_manager_destroy(&g_vault_mgr);
     exit(0);
 }

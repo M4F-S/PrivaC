@@ -11,11 +11,11 @@ int main(void) {
 
     void *p1 = arena_alloc(&arena, 128);
     assert(p1 != NULL);
-    assert(((uintptr_t)p1 % AEGIS_ALIGNMENT) == 0);
+    assert(((uintptr_t)p1 % PRIVAC_ALIGNMENT) == 0);
 
     void *p2 = arena_alloc(&arena, 256);
     assert(p2 != NULL);
-    assert(((uintptr_t)p2 % AEGIS_ALIGNMENT) == 0);
+    assert(((uintptr_t)p2 % PRIVAC_ALIGNMENT) == 0);
 
     char *str = arena_strdup(&arena, "Hello Aegis Pure C Memory Arena");
     assert(strcmp(str, "Hello Aegis Pure C Memory Arena") == 0);

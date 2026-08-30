@@ -18,7 +18,7 @@ static arena_block_t *create_block(size_t capacity) {
 void arena_init(arena_t *arena, size_t default_block_size) {
     if (!arena) return;
     if (default_block_size == 0) {
-        default_block_size = AEGIS_DEFAULT_ARENA_SIZE;
+        default_block_size = PRIVAC_DEFAULT_ARENA_SIZE;
     }
     arena->default_block_size = default_block_size;
     arena->head = create_block(default_block_size);
@@ -29,7 +29,7 @@ void arena_init(arena_t *arena, size_t default_block_size) {
 void *arena_alloc(arena_t *arena, size_t size) {
     if (!arena || size == 0) return NULL;
 
-    size_t aligned_size = align_up(size, AEGIS_ALIGNMENT);
+    size_t aligned_size = align_up(size, PRIVAC_ALIGNMENT);
 
     if (!arena->current) {
         arena->head = create_block(arena->default_block_size > aligned_size ? arena->default_block_size : aligned_size);

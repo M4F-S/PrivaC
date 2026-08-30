@@ -1,11 +1,11 @@
-#ifndef AEGIS_STREAM_FSM_H
-#define AEGIS_STREAM_FSM_H
+#ifndef PRIVAC_STREAM_FSM_H
+#define PRIVAC_STREAM_FSM_H
 
 #include <stddef.h>
 #include <stdbool.h>
 #include "vault.h"
 
-#define AEGIS_STREAM_FSM_BUF_SIZE 1024
+#define PRIVAC_STREAM_FSM_BUF_SIZE 1024
 
 typedef enum {
     FSM_STATE_PASSTHROUGH,
@@ -16,7 +16,7 @@ typedef enum {
 
 typedef struct {
     stream_fsm_state_t state;
-    char buffer[AEGIS_STREAM_FSM_BUF_SIZE];
+    char buffer[PRIVAC_STREAM_FSM_BUF_SIZE];
     size_t buf_len;
     char prefix_expected[32];
     size_t prefix_len;
@@ -41,4 +41,4 @@ size_t stream_fsm_process_chunk(stream_fsm_t *fsm,
 /* Flush any remaining buffered characters at end of stream */
 size_t stream_fsm_flush(stream_fsm_t *fsm, char *out_buf, size_t out_cap);
 
-#endif /* AEGIS_STREAM_FSM_H */
+#endif /* PRIVAC_STREAM_FSM_H */

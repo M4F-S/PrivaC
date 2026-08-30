@@ -6,7 +6,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-void aegis_secure_zero(void *ptr, size_t len) {
+void privac_secure_zero(void *ptr, size_t len) {
     if (!ptr || len == 0) return;
 #if defined(__STDC_LIB_EXT1__)
     memset_s(ptr, len, 0, len);
@@ -27,7 +27,7 @@ static uint32_t hash_str(const char *str) {
     while ((c = (unsigned char)*str++)) {
         hash = ((hash << 5) + hash) + c;
     }
-    return hash % AEGIS_MAX_SESSIONS;
+    return hash % PRIVAC_MAX_SESSIONS;
 }
 
 void vault_manager_init(vault_manager_t *vm) {
@@ -40,7 +40,7 @@ void vault_manager_init(vault_manager_t *vm) {
 void vault_manager_destroy(vault_manager_t *vm) {
     if (!vm) return;
     pthread_mutex_lock(&vm->lock);
-    for (size_t i = 0; i < AEGIS_MAX_SESSIONS; i++) {
+    for (size_t i = 0; i < PRIVAC_MAX_SESSIONS; i++) {
         session_vault_t *curr = vm->sessions[i];
         while (curr) {
             session_vault_t *next = curr->next;
@@ -62,7 +62,7 @@ session_vault_t *vault_get_or_create_session(vault_manager_t *vm, const char *se
     session_vault_t *curr = vm->sessions[bucket];
 
     while (curr) {
-        if (strncmp(curr->session_id, session_id, AEGIS_MAX_SESSION_ID_LEN) == 0) {
+        if (strncmp(curr->session_id, session_id, PRIVAC_MAX_SESSION_ID_LEN) == 0) {
             curr->last_active_ts = (uint64_t)time(NULL);
             pthread_mutex_unlock(&vm->lock);
             return curr;
@@ -84,7 +84,7 @@ session_vault_t *vault_get_or_create_session(vault_manager_t *vm, const char *se
         new_session->is_locked = false;
     }
 
-    strncpy(new_session->session_id, session_id, AEGIS_MAX_SESSION_ID_LEN - 1);
+    strncpy(new_session->session_id, session_id, PRIVAC_MAX_SESSION_ID_LEN - 1);
     new_session->count = 0;
     new_session->last_active_ts = (uint64_t)time(NULL);
     arena_init(&new_session->arena, 32 * 1024);
@@ -108,12 +108,12 @@ const char *session_vault_add_entity(session_vault_t *session, const char *origi
         }
     }
 
-    if (session->count >= AEGIS_MAX_ENTRIES_PER_SESSION) {
+    if (session->count >= PRIVAC_MAX_ENTRIES_PER_SESSION) {
         return original;
     }
 
     vault_entry_t *entry = &session->entries[session->count];
-    strncpy(entry->original_str, original, AEGIS_MAX_ORIGINAL_LEN - 1);
+    strncpy(entry->original_str, original, PRIVAC_MAX_ORIGINAL_LEN - 1);
     entry->type = ENTRY_TYPE_STRING_ENTITY;
 
     /* Count existing entity entries to assign letter/number */
@@ -125,9 +125,9 @@ const char *session_vault_add_entity(session_vault_t *session, const char *origi
     }
 
     if (category && strlen(category) > 0) {
-        snprintf(entry->surrogate_str, AEGIS_MAX_SURROGATE_LEN, "%s_%c", category, (char)('A' + (entity_idx % 26)));
+        snprintf(entry->surrogate_str, PRIVAC_MAX_SURROGATE_LEN, "%s_%c", category, (char)('A' + (entity_idx % 26)));
     } else {
-        snprintf(entry->surrogate_str, AEGIS_MAX_SURROGATE_LEN, "Entity_%c", (char)('A' + (entity_idx % 26)));
+        snprintf(entry->surrogate_str, PRIVAC_MAX_SURROGATE_LEN, "Entity_%c", (char)('A' + (entity_idx % 26)));
     }
 
     session->count++;
@@ -150,12 +150,12 @@ const char *session_vault_add_numeric_var(session_vault_t *session,
         }
     }
 
-    if (session->count >= AEGIS_MAX_ENTRIES_PER_SESSION) {
+    if (session->count >= PRIVAC_MAX_ENTRIES_PER_SESSION) {
         return original_raw;
     }
 
     vault_entry_t *entry = &session->entries[session->count];
-    strncpy(entry->original_str, original_raw, AEGIS_MAX_ORIGINAL_LEN - 1);
+    strncpy(entry->original_str, original_raw, PRIVAC_MAX_ORIGINAL_LEN - 1);
     entry->original_numeric = value;
     entry->num_format = fmt;
     entry->decimals = decimals;
@@ -169,7 +169,7 @@ const char *session_vault_add_numeric_var(session_vault_t *session,
         }
     }
 
-    snprintf(entry->surrogate_str, AEGIS_MAX_SURROGATE_LEN, "VAR_%zu", var_idx);
+    snprintf(entry->surrogate_str, PRIVAC_MAX_SURROGATE_LEN, "VAR_%zu", var_idx);
     session->count++;
     return entry->surrogate_str;
 }
@@ -184,7 +184,7 @@ int64_t session_vault_add_int_surrogate(session_vault_t *session, int64_t origin
         }
     }
 
-    if (session->count >= AEGIS_MAX_ENTRIES_PER_SESSION) {
+    if (session->count >= PRIVAC_MAX_ENTRIES_PER_SESSION) {
         return original_val;
     }
 
@@ -192,13 +192,12 @@ int64_t session_vault_add_int_surrogate(session_vault_t *session, int64_t origin
     entry->type = ENTRY_TYPE_TYPE_PRESERVING_INT;
     entry->original_numeric = (double)original_val;
     
-    /* Generate reproducible pseudo-random surrogate in similar range */
     int64_t surrogate = (original_val ^ 0x5DEECE66DL) % 900000;
     if (surrogate < 100000) surrogate += 100000;
     entry->surrogate_numeric = (double)surrogate;
     
-    snprintf(entry->original_str, AEGIS_MAX_ORIGINAL_LEN, "%lld", (long long)original_val);
-    snprintf(entry->surrogate_str, AEGIS_MAX_SURROGATE_LEN, "%lld", (long long)surrogate);
+    snprintf(entry->original_str, PRIVAC_MAX_ORIGINAL_LEN, "%lld", (long long)original_val);
+    snprintf(entry->surrogate_str, PRIVAC_MAX_SURROGATE_LEN, "%lld", (long long)surrogate);
 
     session->count++;
     return surrogate;
@@ -214,7 +213,7 @@ double session_vault_add_float_surrogate(session_vault_t *session, double origin
         }
     }
 
-    if (session->count >= AEGIS_MAX_ENTRIES_PER_SESSION) {
+    if (session->count >= PRIVAC_MAX_ENTRIES_PER_SESSION) {
         return original_val;
     }
 
@@ -222,12 +221,11 @@ double session_vault_add_float_surrogate(session_vault_t *session, double origin
     entry->type = ENTRY_TYPE_TYPE_PRESERVING_FLOAT;
     entry->original_numeric = original_val;
     
-    /* Perturb float safely */
     double surrogate = (original_val > 0.0 && original_val <= 1.0) ? (original_val * 0.73 + 0.11) : (original_val * 1.37);
     entry->surrogate_numeric = surrogate;
 
-    snprintf(entry->original_str, AEGIS_MAX_ORIGINAL_LEN, "%.4f", original_val);
-    snprintf(entry->surrogate_str, AEGIS_MAX_SURROGATE_LEN, "%.4f", surrogate);
+    snprintf(entry->original_str, PRIVAC_MAX_ORIGINAL_LEN, "%.4f", original_val);
+    snprintf(entry->surrogate_str, PRIVAC_MAX_SURROGATE_LEN, "%.4f", surrogate);
 
     session->count++;
     return surrogate;
@@ -261,18 +259,18 @@ void session_vault_wipe_and_free(session_vault_t *session) {
     if (session->is_locked) {
         munlock(session, sizeof(session_vault_t));
     }
-    aegis_secure_zero(session, sizeof(session_vault_t));
+    privac_secure_zero(session, sizeof(session_vault_t));
     free(session);
 }
 
 void vault_manager_evict_expired(vault_manager_t *vm, uint64_t current_ts) {
     if (!vm) return;
     pthread_mutex_lock(&vm->lock);
-    for (size_t i = 0; i < AEGIS_MAX_SESSIONS; i++) {
+    for (size_t i = 0; i < PRIVAC_MAX_SESSIONS; i++) {
         session_vault_t **curr_ptr = &vm->sessions[i];
         while (*curr_ptr) {
             session_vault_t *s = *curr_ptr;
-            if (current_ts > s->last_active_ts && (current_ts - s->last_active_ts) > AEGIS_SESSION_TTL_SEC) {
+            if (current_ts > s->last_active_ts && (current_ts - s->last_active_ts) > PRIVAC_SESSION_TTL_SEC) {
                 *curr_ptr = s->next;
                 session_vault_wipe_and_free(s);
                 vm->active_sessions--;

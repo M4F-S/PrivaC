@@ -13,7 +13,7 @@ static double get_time_us(void) {
 
 int main(void) {
     printf("==================================================================\n");
-    printf("  AEGIS BLIND C PROXY & SYMBOLIC ENGINE - BENCHMARK SUITE\n");
+    printf("  PRIVAC: BLIND C PROXY & SYMBOLIC ENGINE - BENCHMARK SUITE\n");
     printf("==================================================================\n\n");
 
     vault_manager_t vm;

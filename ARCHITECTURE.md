@@ -1,6 +1,6 @@
-# Aegis Architecture & Deep Technical Specifications
+# PrivaC Architecture & Deep Technical Specifications
 
-This document outlines the internal mechanics, memory layouts, finite state machines, and threat model for Aegis.
+This document outlines the internal mechanics, memory layouts, finite state machines, and threat model for PrivaC.
 
 ---
 
@@ -15,7 +15,7 @@ This document outlines the internal mechanics, memory layouts, finite state mach
 │                     │  (Cleartext PII + Real Numbers)  │
 │                     ▼                                  │
 │  ┌──────────────────────────────────────────────────┐  │
-│  │               Aegis Reverse Proxy                │  │
+│  │               PrivaC Reverse Proxy               │  │
 │  │                                                  │  │
 │  │   ┌───────────────────┐    ┌─────────────────┐   │  │
 │  │   │  mlock() Vault    │    │  Arena Heap     │   │  │
@@ -33,7 +33,7 @@ This document outlines the internal mechanics, memory layouts, finite state mach
 1. **Zero-Knowledge Prompt Transmission:** Raw numerical figures and sensitive entity names are replaced before TCP egress.
 2. **Deterministic Arithmetic Verification:** Eliminates LLM calculation hallucination by restricting the LLM to algebraic expression synthesis.
 3. **Anti-Swapping (`mlock`):** Prevents kernel paging of sensitive session values to physical swap partitions.
-4. **Defensive Zeroization:** Guaranteed memory wiping (`memset_s` / memory barrier loop) on session destruction.
+4. **Defensive Zeroization:** Guaranteed memory wiping (`privac_secure_zero` with memory barriers) on session destruction.
 
 ---
 

@@ -1,19 +1,19 @@
-#ifndef AEGIS_ARENA_H
-#define AEGIS_ARENA_H
+#ifndef PRIVAC_ARENA_H
+#define PRIVAC_ARENA_H
 
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
 
-#define AEGIS_DEFAULT_ARENA_SIZE (128 * 1024) /* 128 KB */
-#define AEGIS_ALIGNMENT 16
+#define PRIVAC_DEFAULT_ARENA_SIZE (128 * 1024) /* 128 KB */
+#define PRIVAC_ALIGNMENT 16
 
 typedef struct arena_block {
     struct arena_block *next;
     size_t capacity;
     size_t offset;
     size_t _pad;
-    _Alignas(AEGIS_ALIGNMENT) uint8_t data[];
+    _Alignas(PRIVAC_ALIGNMENT) uint8_t data[];
 } arena_block_t;
 
 typedef struct {
@@ -44,4 +44,4 @@ void arena_reset(arena_t *arena);
 /* Free all underlying blocks */
 void arena_destroy(arena_t *arena);
 
-#endif /* AEGIS_ARENA_H */
+#endif /* PRIVAC_ARENA_H */

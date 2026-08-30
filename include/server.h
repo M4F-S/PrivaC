@@ -1,5 +1,5 @@
-#ifndef AEGIS_SERVER_H
-#define AEGIS_SERVER_H
+#ifndef PRIVAC_SERVER_H
+#define PRIVAC_SERVER_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -20,4 +20,4 @@ typedef struct {
 /* Start reverse proxy server (blocking event loop) */
 int server_start(const server_config_t *config);
 
-#endif /* AEGIS_SERVER_H */
+#endif /* PRIVAC_SERVER_H */

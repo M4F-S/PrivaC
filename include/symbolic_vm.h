@@ -1,5 +1,5 @@
-#ifndef AEGIS_SYMBOLIC_VM_H
-#define AEGIS_SYMBOLIC_VM_H
+#ifndef PRIVAC_SYMBOLIC_VM_H
+#define PRIVAC_SYMBOLIC_VM_H
 
 #include <stddef.h>
 #include <stdbool.h>
@@ -19,4 +19,4 @@ math_vm_result_t symbolic_vm_eval(const session_vault_t *session, const char *ex
 /* Helper to format numbers with currency commas, decimals, and symbols */
 void symbolic_vm_format_number(double val, number_format_t fmt, int decimals, bool has_commas, char *out, size_t out_len);
 
-#endif /* AEGIS_SYMBOLIC_VM_H */
+#endif /* PRIVAC_SYMBOLIC_VM_H */

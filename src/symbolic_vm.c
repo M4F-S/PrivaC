@@ -92,7 +92,7 @@ math_vm_result_t symbolic_vm_eval(const session_vault_t *session, const char *ex
     }
 
     /* Bind variables from session vault */
-    te_variable te_vars[AEGIS_MAX_ENTRIES_PER_SESSION];
+    te_variable te_vars[PRIVAC_MAX_ENTRIES_PER_SESSION];
     int var_count = 0;
     number_format_t dominant_fmt = NUM_FMT_RAW_FLOAT;
     int max_decimals = 0;

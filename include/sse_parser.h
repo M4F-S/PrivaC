@@ -1,5 +1,5 @@
-#ifndef AEGIS_SSE_PARSER_H
-#define AEGIS_SSE_PARSER_H
+#ifndef PRIVAC_SSE_PARSER_H
+#define PRIVAC_SSE_PARSER_H
 
 #include <stddef.h>
 #include <stdbool.h>
@@ -23,4 +23,4 @@ size_t sse_stream_process_data(sse_stream_handler_t *handler,
                                char *out_buf, 
                                size_t out_cap);
 
-#endif /* AEGIS_SSE_PARSER_H */
+#endif /* PRIVAC_SSE_PARSER_H */

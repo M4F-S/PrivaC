@@ -1,5 +1,5 @@
-#ifndef AEGIS_MASK_ENGINE_H
-#define AEGIS_MASK_ENGINE_H
+#ifndef PRIVAC_MASK_ENGINE_H
+#define PRIVAC_MASK_ENGINE_H
 
 #include <stddef.h>
 #include <stdbool.h>
@@ -36,4 +36,4 @@ char *mask_engine_unmask_text(const session_vault_t *session,
                               arena_t *arena, 
                               const char *masked_text);
 
-#endif /* AEGIS_MASK_ENGINE_H */
+#endif /* PRIVAC_MASK_ENGINE_H */

@@ -1,5 +1,5 @@
-#ifndef AEGIS_VAULT_H
-#define AEGIS_VAULT_H
+#ifndef PRIVAC_VAULT_H
+#define PRIVAC_VAULT_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -7,12 +7,12 @@
 #include <pthread.h>
 #include "arena.h"
 
-#define AEGIS_MAX_SESSION_ID_LEN 64
-#define AEGIS_MAX_ORIGINAL_LEN 128
-#define AEGIS_MAX_SURROGATE_LEN 64
-#define AEGIS_MAX_ENTRIES_PER_SESSION 256
-#define AEGIS_MAX_SESSIONS 1024
-#define AEGIS_SESSION_TTL_SEC 1800 /* 30 minutes */
+#define PRIVAC_MAX_SESSION_ID_LEN 64
+#define PRIVAC_MAX_ORIGINAL_LEN 128
+#define PRIVAC_MAX_SURROGATE_LEN 64
+#define PRIVAC_MAX_ENTRIES_PER_SESSION 256
+#define PRIVAC_MAX_SESSIONS 1024
+#define PRIVAC_SESSION_TTL_SEC 1800 /* 30 minutes */
 
 typedef enum {
     NUM_FMT_RAW_INT,
@@ -29,8 +29,8 @@ typedef enum {
 } entry_type_t;
 
 typedef struct {
-    char original_str[AEGIS_MAX_ORIGINAL_LEN];
-    char surrogate_str[AEGIS_MAX_SURROGATE_LEN];
+    char original_str[PRIVAC_MAX_ORIGINAL_LEN];
+    char surrogate_str[PRIVAC_MAX_SURROGATE_LEN];
     double original_numeric;
     double surrogate_numeric;
     number_format_t num_format;
@@ -40,8 +40,8 @@ typedef struct {
 } vault_entry_t;
 
 typedef struct session_vault {
-    char session_id[AEGIS_MAX_SESSION_ID_LEN];
-    vault_entry_t entries[AEGIS_MAX_ENTRIES_PER_SESSION];
+    char session_id[PRIVAC_MAX_SESSION_ID_LEN];
+    vault_entry_t entries[PRIVAC_MAX_ENTRIES_PER_SESSION];
     size_t count;
     uint64_t last_active_ts;
     bool is_locked; /* mlock active */
@@ -50,7 +50,7 @@ typedef struct session_vault {
 } session_vault_t;
 
 typedef struct {
-    session_vault_t *sessions[AEGIS_MAX_SESSIONS];
+    session_vault_t *sessions[PRIVAC_MAX_SESSIONS];
     pthread_mutex_t lock;
     size_t active_sessions;
 } vault_manager_t;
@@ -92,6 +92,6 @@ void session_vault_wipe_and_free(session_vault_t *session);
 void vault_manager_evict_expired(vault_manager_t *vm, uint64_t current_ts);
 
 /* Defensive memory zeroization helper */
-void aegis_secure_zero(void *ptr, size_t len);
+void privac_secure_zero(void *ptr, size_t len);
 
-#endif /* AEGIS_VAULT_H */
+#endif /* PRIVAC_VAULT_H */

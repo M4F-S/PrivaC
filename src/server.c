@@ -278,7 +278,7 @@ int server_start(const server_config_t *config) {
     }
 
     printf("==================================================================\n");
-    printf("  AEGIS BLIND C PROXY & SYMBOLIC ENGINE (Port %d)\n", config->port);
+    printf("  PRIVAC: ULTRA-FAST BLIND C PROXY & SYMBOLIC ENGINE (Port %d)\n", config->port);
     printf("  Mode: %s\n", config->mock_mode ? "Mock LLM Engine (Offline Demo)" : "Upstream Forwarder");
     if (!config->mock_mode && config->upstream_host) {
         printf("  Upstream: %s:%d\n", config->upstream_host, config->upstream_port);
